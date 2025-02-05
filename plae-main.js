@@ -9,7 +9,8 @@ document.addEventListener("DOMContentLoaded", function () {
         "functions.js",
         "request-quote.js",
         "required-field.js",
-        "tylerhobsoncomingsoon.js" 
+        "tylerhobsoncomingsoon.js",
+        "plae-custom-css.css"
     ];
 
     // Base URL for jsDelivr
