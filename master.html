@@ -1,0 +1,1288 @@
+<!-- Notyf CSS -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.css">
+
+<!-- Notyf JavaScript -->
+<script src="https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.js"></script>
+
+<script src="https://cdn.jsdelivr.net/gh/yndr-dev-dave/plae-scripts@main/test%20copy.js"></script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Locate the footer section
+        const footerSection = document.querySelector('section.footer');
+        if (footerSection) {
+            // Locate the specific element containing the copyright text
+            const copyrightElement = footerSection.querySelector('div.small-text.gray.smaller');
+            if (copyrightElement) {
+                // Insert the current year after 'copyright plae'
+                const originalText = copyrightElement.textContent;
+                const updatedText = originalText.replace(
+                    'copyright plae',
+                    `copyright plae ${new Date().getFullYear()}`
+                );
+                copyrightElement.textContent = updatedText;
+            } else {
+                console.log("No element found with class 'small-text gray smaller' containing the copyright text.");
+            }
+        } else {
+            console.log("Footer section not found.");
+        }
+        
+
+
+//red borders when focus box.        
+document.querySelectorAll(['select','input']).forEach(select => {
+        // Add focus and blur event listeners for red border
+            select.addEventListener('focus', () => {
+                select.style.borderColor = 'red'; // Apply red border on focus
+            });
+            select.addEventListener('blur', () => {
+                select.style.borderColor = ''; // Reset border on blur
+            });
+             });
+
+        
+document.querySelector('input[type="submit"]').addEventListener('click', (event) => {
+  console.log("? Submit button clicked");
+
+  let hasErrors = false;
+  let firstInvalidElement = null;
+
+  // We assume this submit button is in a form
+  const form = event.target.closest('form'); 
+
+  // 2a) First, check if each phone input is exactly 10 digits
+  phoneInputs.forEach((phoneField) => {
+    const rawDigits = phoneField.value.replace(/\D/g, '');
+    if (rawDigits.length !== 10) {
+      // Set custom validation error
+      phoneField.setCustomValidity("Phone number must be exactly 10 digits.");
+    } else {
+      // Clear custom validation error if it's valid now
+      phoneField.setCustomValidity("");
+    }
+  });
+
+  // 2b) Now run your existing custom validation/tooltip logic
+  form.querySelectorAll('input, textarea, select').forEach((element) => {
+    // Remove existing tooltips
+    const existingTooltip = document.querySelector(`.custom-tooltip[data-for="${element.name}"]`);
+    if (existingTooltip) existingTooltip.remove();
+
+    // Validate the field
+    if (!element.checkValidity()) {
+      hasErrors = true;
+
+      // Track the first invalid element
+      if (!firstInvalidElement) {
+        firstInvalidElement = element;
+      }
+
+      // Create a custom tooltip
+      const tooltip = document.createElement('div');
+      tooltip.className = 'custom-tooltip';
+      tooltip.setAttribute('data-for', element.name);
+      tooltip.textContent = element.validationMessage || 'Please fill out this field';
+      tooltip.style.color = 'red';
+      tooltip.style.marginTop = '5px';
+      tooltip.style.fontSize = '12px';
+
+      // Find the label associated with the input field
+      const label = form.querySelector(`label[for="${element.id}"]`);
+      if (label) {
+        label.insertAdjacentElement('afterend', tooltip);
+      } else {
+        // If no label, append tooltip after the field
+        element.insertAdjacentElement('afterend', tooltip);
+      }
+
+      // Remove the tooltip when the user starts typing
+      element.addEventListener('input', () => tooltip.remove(), { once: true });
+    }
+  });
+
+  // 2c) Handle error display or proceed with form action
+  if (hasErrors) {
+    // Scroll to the first invalid element
+    if (firstInvalidElement) {
+      firstInvalidElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      firstInvalidElement.focus();
+    }
+
+    // Show lower-third popup
+    const popup = document.createElement('div');
+    popup.textContent = 'Some fields are invalid. Please correct them.';
+    popup.style.position = 'fixed';
+    popup.style.bottom = '10px';
+    popup.style.left = '50%';
+    popup.style.transform = 'translateX(-50%)';
+    popup.style.backgroundColor = '#f44336';
+    popup.style.color = '#fff';
+    popup.style.padding = '10px 20px';
+    popup.style.borderRadius = '5px';
+    popup.style.boxShadow = '0 2px 5px rgba(0, 0, 0, 0.3)';
+    popup.style.fontSize = '14px';
+    popup.style.zIndex = '1000';
+    popup.style.opacity = '0';
+    popup.style.transition = 'opacity 0.3s ease-in-out';
+
+    document.body.appendChild(popup);
+
+    // Fade it in
+    setTimeout(() => (popup.style.opacity = '1'), 0);
+
+    // Remove it after 5 seconds
+    setTimeout(() => {
+      popup.style.opacity = '0';
+      setTimeout(() => popup.remove(), 300); 
+    }, 5000);
+
+    // Prevent form submission
+    event.preventDefault();
+  } else {
+    // If no errors, proceed with any success logic:
+    // Optionally do your custom redirect logic
+
+    const pathsToMatch = [
+      '/acft',
+      '/career',
+      '/consumer-confirmation',
+      '/order-confirmation',
+      'tylerhobsoncomingsoon',
+      '/accessories',
+      '/work-with-us',
+      '/request-quote'
+    ];
+
+    const currentPath = window.location.pathname;
+    if (pathsToMatch.includes(currentPath)) {
+      setTimeout(() => {
+        window.location.href = '/thank-you';
+      }, 500);
+    }
+  }
+});
+
+// Query multiple fields by their IDs or class
+const textFields = document.querySelectorAll('#City, #City-2'); // Add your field IDs or classes here
+
+textFields.forEach(field => {
+  field.addEventListener('input', function () {
+    // Regex to allow text and special characters but no numbers
+    const validValue = field.value.replace(/[0-9]/g, ''); // Remove numeric characters
+    field.value = validValue;
+  });
+
+  field.addEventListener('blur', function () {
+    // Optional: Trim spaces on blur for cleaner input
+    field.value = field.value.trim();
+  });
+});
+
+
+//Required Inputs
+// List of paths to check
+const paths = ['/work-with-us','/ACFT'];
+
+
+// Check if the current URL's path matches any in the array
+if (paths.some(path => window.location.pathname.includes(path))) {
+
+//budget page input
+const budgetInput = document.querySelector('#budget-amount');
+
+budgetInput.addEventListener('input', function () {
+  let rawValue = budgetInput.value;
+
+  // Allow only numbers and a single period for decimals
+  const validValue = rawValue.replace(/[^0-9.]/g, ''); // Remove non-numeric, non-period characters
+  
+  // Ensure only one period is allowed in the input
+  const parts = validValue.split('.');
+  if (parts.length > 2) {
+    budgetInput.value = parts[0] + '.' + parts.slice(1).join(''); // Keep only the first period
+  } else {
+    budgetInput.value = validValue;
+  }
+});
+
+budgetInput.addEventListener('blur', function () {
+  let value = budgetInput.value;
+
+  // Automatically format to include two decimal places if applicable
+  if (value && !isNaN(value)) {
+    budgetInput.value = parseFloat(value).toFixed(2);
+  }
+});
+
+
+        // Select all required input fields
+        document.querySelectorAll('input[required]').forEach((input) => {
+        
+          const label = input.closest('label');
+            if (label) {
+                console.log('Skipping input inside label:', label); // Log the label element
+                return;
+            }
+            // Create a wrapper div
+            const wrapper = document.createElement('div');
+            wrapper.classList.add('input-wrapper'); // Add class for easier management
+            wrapper.style.position = 'relative'; // Needed for absolute positioning
+            wrapper.style.display = 'inline-block'; // Ensures it doesn't break layout
+            wrapper.style.margin = getComputedStyle(input).margin; // Preserve input margins
+
+            // Remove margin from the input to avoid layout shift
+            input.style.margin = '0';
+
+            // Create the asterisk div
+            const asteriskDiv = document.createElement('div');
+            asteriskDiv.classList.add('required-input'); // Add class for easier styling
+            asteriskDiv.textContent = '*';
+
+
+            // Insert the wrapper into the DOM
+            input.parentNode.insertBefore(wrapper, input);
+            wrapper.appendChild(input);
+            wrapper.appendChild(asteriskDiv);
+        });
+        
+         document.querySelectorAll('select[required]').forEach((input) => {
+            // Create a wrapper div
+            const wrapper = document.createElement('div');
+            wrapper.classList.add('input-wrapper'); // Add class for easier management
+            wrapper.style.position = 'relative'; // Needed for absolute positioning
+            wrapper.style.display = 'inline-block'; // Ensures it doesn't break layout
+            wrapper.style.margin = getComputedStyle(input).margin; // Preserve input margins
+
+            // Remove margin from the input to avoid layout shift
+            input.style.margin = '0';
+
+            // Create the asterisk div
+            const asteriskDiv = document.createElement('div');
+            asteriskDiv.classList.add('required-select'); // Add class for easier styling
+            asteriskDiv.textContent = '*';
+
+
+            // Insert the wrapper into the DOM
+            input.parentNode.insertBefore(wrapper, input);
+            wrapper.appendChild(input);
+            wrapper.appendChild(asteriskDiv);
+        });
+    }
+    
+    // Check if we are on the 'accessories' page
+if (window.location.pathname === '/accessories') {
+// Get all elements with the target class
+    const elements = document.getElementsByClassName('text-field-22 warranty_field accessories-text-filde');
+
+    // Iterate through the elements and update their width
+    Array.from(elements).forEach((element) => {
+        element.style.width = '100%'; // Update width dynamically
+    });
+    // Select all inputs with the class `warranty_field` that are required
+    document.querySelectorAll('input.warranty_field[required]').forEach((input) => {
+    // Apply width styling directly
+        input.style.width = '100%!important';
+        // Create a wrapper div
+        const wrapper = document.createElement('div');
+        wrapper.classList.add('accessories-input-wrapper'); // Add specific class for accessories layout
+
+        // Create the asterisk div
+        const asteriskDiv = document.createElement('div');
+        asteriskDiv.classList.add('required-asterisk');
+        asteriskDiv.textContent = '*';
+
+        // Insert the wrapper into the DOM
+        input.parentNode.insertBefore(wrapper, input);
+        wrapper.appendChild(input);
+        wrapper.appendChild(asteriskDiv);
+    });
+    
+    // Target all select elements with the required class
+     document.querySelectorAll('select.text-field-22.warranty_field.accessories-text-filde-2').forEach((select) => {
+        // Ensure we're working with the correct element
+        console.log('Targeting:', select);
+
+        // Create a wrapper div
+        const wrapperSelect = document.createElement('div');
+        wrapperSelect.classList.add('accessories-select-wrapper'); // Add specific class for accessories layout
+
+        // Create the asterisk div
+        const asteriskSelectDiv = document.createElement('div');
+        asteriskSelectDiv.classList.add('required-select-asterisk');
+        asteriskSelectDiv.textContent = '*';
+
+        // Wrap the <select> element
+        select.parentNode.insertBefore(wrapperSelect, select); // Insert wrapper before the <select>
+        wrapperSelect.appendChild(select); // Move the <select> inside the wrapper
+        wrapperSelect.appendChild(asteriskSelectDiv); // Add the asterisk
+    });
+}
+
+if (window.location.pathname === '/acft') {
+
+const targetElement = document.querySelector('.text-field-acft.message');
+  
+  if (targetElement) {
+    // Apply the style directly
+    targetElement.style.setProperty('padding-bottom', '140px', 'important');
+  }
+
+
+    // Target all required input fields
+    document.querySelectorAll('input.text-field-acft[required]').forEach((input) => {
+        // Create a wrapper div
+        const wrapper = document.createElement('div');
+        wrapper.classList.add('acft-input-wrapper'); // Add specific class for ACFT layout
+
+        // Create the asterisk div
+        const asteriskDiv = document.createElement('div');
+        asteriskDiv.classList.add('required-input-acft-asterisk');
+        asteriskDiv.textContent = '*';
+
+        // Wrap the input field
+        input.parentNode.insertBefore(wrapper, input);
+        wrapper.appendChild(input);
+        wrapper.appendChild(asteriskDiv);
+    });
+
+    // Target the required select field
+    document.querySelectorAll('select.text-field-acft[required]').forEach((select) => {
+        // Create a wrapper div
+        const wrapperSelect = document.createElement('div');
+        wrapperSelect.classList.add('acft-select-wrapper'); // Add specific class for ACFT select layout
+
+        // Create the asterisk div
+        const asteriskSelectDiv = document.createElement('div');
+        asteriskSelectDiv.classList.add('required-select-acft-asterisk');
+        asteriskSelectDiv.textContent = '*';
+
+        // Wrap the select field
+        select.parentNode.insertBefore(wrapperSelect, select);
+        wrapperSelect.appendChild(select);
+        wrapperSelect.appendChild(asteriskSelectDiv);
+    });
+}
+
+
+if (window.location.pathname === '/request-quote') {
+    const targetElement = document.querySelector('.field_request.message');
+
+    if (targetElement) {
+        targetElement.style.setProperty('padding-bottom', '140px', 'important');
+    }
+
+    // Target all required input fields
+    document.querySelectorAll('input.field_request[required]').forEach((input) => {
+        const wrapper = document.createElement('div');
+        wrapper.classList.add('quote-input-wrapper');
+
+        const asteriskDiv = document.createElement('div');
+        asteriskDiv.classList.add('required-input-quote-asterisk');
+        asteriskDiv.textContent = '*';
+
+        input.parentNode.insertBefore(wrapper, input);
+        wrapper.appendChild(input);
+        wrapper.appendChild(asteriskDiv);
+    });
+
+    // Target the required select field
+    document.querySelectorAll('select.field_request[required]').forEach((select) => {
+        const wrapperSelect = document.createElement('div');
+        wrapperSelect.classList.add('quote-select-wrapper');
+
+        const asteriskSelectDiv = document.createElement('div');
+        asteriskSelectDiv.classList.add('required-select-quote-asterisk');
+        asteriskSelectDiv.textContent = '*';
+
+        select.parentNode.insertBefore(wrapperSelect, select);
+        wrapperSelect.appendChild(select);
+        wrapperSelect.appendChild(asteriskSelectDiv);
+    });
+
+    // Handle region select visibility logic and required attribute on radio buttons
+    const regionSelect = document.getElementById('REGION');
+    const garageHomeGym = document.getElementById('garage-home-gym');
+    const installationService = document.getElementById('installation-service');
+    const architectDesigner = document.getElementById('architect-designer');
+    const governmentFacility = document.getElementById('government-facility');
+
+    if (regionSelect && garageHomeGym) {
+        const updateGarageHomeGymVisibility = () => {
+            const isVisible = regionSelect.value === 'USA';
+            garageHomeGym.style.display = isVisible ? 'block' : 'none';
+
+            // Find all radio buttons inside #garage-home-gym
+            const radioButtons = garageHomeGym.querySelectorAll('input[type="radio"]');
+
+            radioButtons.forEach((radio) => {
+                if (isVisible) {
+                    radio.setAttribute('required', 'required');
+                } else {
+                    radio.removeAttribute('required');
+                }
+            });
+        };
+
+        // Run initially to set correct visibility and required attributes
+        updateGarageHomeGymVisibility();
+
+        // Listen for changes in the select dropdown
+        regionSelect.addEventListener('change', updateGarageHomeGymVisibility);
+    }
+
+    // Handle Garage Home Gym radio button selection
+    const garageRadioYes = garageHomeGym?.querySelector('input[type="radio"][value="YES"]');
+    const garageRadioNo = garageHomeGym?.querySelector('input[type="radio"][value="NO"]');
+
+    const updateAdditionalSections = () => {
+        if (!garageRadioYes || !garageRadioNo) return;
+
+        if (garageRadioYes.checked) {
+            // Hide additional sections and remove required attributes
+            [installationService, architectDesigner, governmentFacility].forEach((section) => {
+                if (section) {
+                    section.style.display = 'none';
+                    section.querySelectorAll('input[type="radio"]').forEach((radio) => {
+                        radio.removeAttribute('required');
+                    });
+                }
+            });
+        } else if (garageRadioNo.checked) {
+            // Show additional sections and set required attributes
+            [installationService, architectDesigner, governmentFacility].forEach((section) => {
+                if (section) {
+                    section.style.display = 'block';
+                    section.querySelectorAll('input[type="radio"]').forEach((radio) => {
+                        radio.setAttribute('required', 'required');
+                    });
+                }
+            });
+        }
+    };
+
+    // Run initially to set correct visibility and required attributes
+    updateAdditionalSections();
+
+    // Listen for changes in Garage Home Gym radio buttons
+    if (garageRadioYes) garageRadioYes.addEventListener('change', updateAdditionalSections);
+    if (garageRadioNo) garageRadioNo.addEventListener('change', updateAdditionalSections);
+}
+
+
+
+ 
+if (window.location.pathname === '/tylerhobsoncomingsoon') {
+    // Target all required input fields in the form
+    document.querySelectorAll('#wf-form-Tylerhobsoncomingsoon-Form input[required]').forEach((input) => {
+        // Create a wrapper div
+        const wrapper = document.createElement('div');
+        wrapper.classList.add('tyler-input-wrapper'); // Add specific wrapper class for layout
+
+        // Create the asterisk div
+        const asteriskDiv = document.createElement('div');
+        asteriskDiv.classList.add('required-input-tyler-asterisk'); // Specific class for Tyler form asterisks
+        asteriskDiv.textContent = '*';
+
+        // Wrap the input field
+        input.parentNode.insertBefore(wrapper, input);
+        wrapper.appendChild(input);
+        wrapper.appendChild(asteriskDiv);
+    });
+}
+
+if (window.location.pathname === '/careers') {
+  const dropdown = document.querySelector('#Select-Job');
+  const targetContainer = document.querySelector('.div-block-36');
+  const careersContainer = document.querySelector('#careers');
+  const accordions = careersContainer?.querySelectorAll('.accordion_careers');
+
+  // Add career names to the dropdown if #careers exists
+  if (dropdown && careersContainer) {
+    const careerToggles = careersContainer.querySelectorAll('.accordion_careers_text');
+
+    careerToggles.forEach(careerToggle => {
+      const careerName = careerToggle.textContent.trim();
+
+      if (careerName) {
+        // Create a new option
+        const option = document.createElement('option');
+        option.value = careerName;
+        option.textContent = careerName;
+
+        // Append the option to the dropdown
+        dropdown.appendChild(option);
+      }
+    });
+  } else {
+    console.error('Dropdown or #careers container not found.');
+  }
+
+  // Copy full accordion elements to the target container
+  if (accordions && targetContainer) {
+    accordions.forEach(accordion => {
+      // Clone the accordion element
+      const clonedAccordion = accordion.cloneNode(true);
+
+      // Append the cloned element to the target container
+      targetContainer.appendChild(clonedAccordion);
+    });
+  } else {
+    console.error('No accordion elements or target container found.');
+  }
+
+  // Add "Apply" button functionality
+  const careerDetails = careersContainer?.querySelectorAll('.w-dropdown-list');
+  const careerToggles = careersContainer?.querySelectorAll('.accordion_careers_text');
+
+  careerDetails?.forEach((detail, index) => {
+    // Create the "Apply" button
+    const applyButton = document.createElement('button');
+    applyButton.textContent = 'Apply';
+    applyButton.className = 'apply-button';
+    applyButton.style.marginTop = '20px'; // Add spacing for visibility
+
+    // Append the "Apply" button to the inner content
+    detail.appendChild(applyButton);
+
+    // Add event listener to handle "Apply" button click
+    applyButton.addEventListener('click', function () {
+      const careerName = careerToggles[index]?.textContent.trim();
+
+      if (careerName && dropdown) {
+        // Scroll to the dropdown
+        dropdown.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+        // Match and select the corresponding option
+        const options = Array.from(dropdown.options);
+        const matchingOption = options.find(option => option.value === careerName);
+
+        if (matchingOption) {
+          dropdown.value = matchingOption.value;
+        } else {
+          console.error(`No matching option found for: ${careerName}`);
+        }
+      }
+    });
+  });
+
+ // Format and customize job listings
+  const navElements = careersContainer?.querySelectorAll('nav.dropdown-list-46');
+  const careersMobile = document.querySelector('#careers-mobile');
+
+  navElements?.forEach(nav => {
+    // Find all <p> and <li> elements within the current <nav>
+    const paragraphsAndListItems = nav.querySelectorAll('p, li');
+
+    // Add the text-block-11-copy.min.small classes to <p> and <li> elements
+    paragraphsAndListItems.forEach(element => {
+      element.classList.add('text-block-11-copy', 'min', 'small');
+
+      // If inside #careers-mobile, make text white
+      if (careersMobile?.contains(element)) {
+        element.style.color = 'white';
+      }
+    });
+
+    // Find all <h2> and <h3> elements within the current <nav>
+    const h2Headings = nav.querySelectorAll('h2');
+    const h3Headings = nav.querySelectorAll('h3');
+
+    // Apply classes to <h2> elements
+    h2Headings.forEach((h2, index) => {
+      if (index === 0) {
+        h2.classList.add('accordion_careers_subtitle');
+      } else {
+        h2.classList.add('accordion_careers_subtitle', 'light');
+      }
+
+      // If inside #careers-mobile, make text white
+      if (careersMobile?.contains(h2)) {
+        h2.style.color = 'white';
+      }
+    });
+    if (careersMobile?.contains(paragraphsAndListItems)) {
+        paragraphsAndListItems.style.color = 'white';
+      }
+    });
+
+    // Apply classes to <h3> elements
+    h3Headings.forEach(h3 => {
+      h3.classList.add('accordion_careers_subtitle', 'light');
+
+      // If inside #careers-mobile, make text white
+      if (careersMobile?.contains(h3)) {
+        h3.style.color = 'white';
+      }
+    });
+
+}
+
+
+
+//Region Phone Validation
+ const regionSelect = document.getElementById('REGION');
+    const phoneInput   = document.getElementById('region-PHONE');
+
+ // 1) Define phone formats and placeholder examples for each region
+    //    (You can tweak the regex/patterns to match your exact needs.)
+    const phoneFormats = {
+      'USA': {
+        pattern: '^\\(\\d{3}\\) \\d{3}-\\d{4}$', // e.g. (123) 456-7890
+        placeholder: '(123) 456-7890'
+      },
+      'Canada': {
+        pattern: '^\\(\\d{3}\\) \\d{3}-\\d{4}$', // e.g. (123) 456-7890
+        placeholder: '(123) 456-7890'
+      },
+      'South America': {
+        // Example: +55 11-2345-6789
+        // Pattern: +XX (1?3 digits) - (3?4 digits) - (4 digits)
+        pattern: '\\d{10,15}',
+        placeholder: '+55 11-2345-6789'
+      },
+      'Asia-Pacific': {
+        // Example: +81 3-1234-5678 (Japan) 
+        // Pattern: +XXX (1?4 digits) - (3?4 digits) - (4 digits)
+        pattern: '\\d{10,15}',
+        placeholder: '+81 3-1234-5678'
+      },
+      'UAE': {
+        // Example: +971 50 123 4567
+        pattern: '\\d{10,15}',
+        placeholder: '+971 50 123 4567'
+      },
+      'UK': {
+        // Example: +44 7123 456789 or 07123 456789
+        pattern: '\\d{10,15}',
+        placeholder: '+44 7123 456789'
+      },
+      'Europe': {
+        // Highly simplified example: +49 30 1234 5678
+        // Pattern: +XX (1?4 digits) (3?4 digits) (3?4 digits)
+        pattern: '\\d{10,15}',
+        placeholder: '+49 30 1234 5678'
+      }
+    };
+
+    // 2) Auto-format functions for each region
+    //    (Note: These are simplified for demonstration.)
+function formatDefault(numbersOnly) {
+  // Limit the input to a maximum of 15 digits
+  if (numbersOnly.length > 15) {
+    return numbersOnly.slice(0, 15);
+  }
+  
+  return numbersOnly; // Return the numbers as-is if within the limit
+}
+    function formatUSA(numbersOnly) {
+      // (xxx) xxx-xxxx
+      let area   = numbersOnly.slice(0, 3);
+      let middle = numbersOnly.slice(3, 6);
+      let last   = numbersOnly.slice(6, 10);
+
+      let formatted = '';
+      if (area) {
+        formatted += `(${area}`;
+        if (area.length === 3) formatted += ')';
+      }
+      if (middle) {
+        if (area.length === 3) formatted += ' ';
+        formatted += middle;
+      }
+      if (last) {
+        if (middle.length === 3) formatted += '-';
+        formatted += last;
+      }
+      return formatted;
+    }
+
+    // Canada uses the same format as the USA example
+    function formatCanada(numbersOnly) {
+      return formatUSA(numbersOnly);
+    }
+
+    function formatSouthAmerica(numbersOnly) {
+      // Example target format: +XX XX-XXXX-XXXX
+      // But the pattern suggests we can have 1?3 digits in the second group
+      // We'll do a simplified approach: +cc ( up to 3 digits ) - (3?4 digits ) - (4 digits)
+      let cc        = numbersOnly.slice(0, 2); // +XX
+      let region    = numbersOnly.slice(2, 5); // up to 3 digits
+      let middle    = numbersOnly.slice(5, 9); // up to 4 digits
+      let last      = numbersOnly.slice(9, 13);
+
+      let formatted = '+';
+      if (cc) {
+        formatted += cc;
+      }
+      if (region) {
+        formatted += ' ' + region;
+      }
+      if (middle) {
+        formatted += '-' + middle;
+      }
+      if (last) {
+        formatted += '-' + last;
+      }
+      return formatted;
+    }
+
+    function formatAsiaPacific(numbersOnly) {
+      // Example target: +XXX X-XXXX-XXXX
+      // We'll assume +cc or +ccc for the country code
+      // Then up to 4 digits, then 3?4 digits, then 4 digits
+      // Example input: +81 3-1234-5678 => cc=81, region=3, middle=1234, last=5678
+      // or +673 1234-5678-9999, etc.
+      let ccLen       = numbersOnly.length > 2 ? 3 : 2; // if we have at least 3 digits, assume a 3-digit country code
+      let cc          = numbersOnly.slice(0, ccLen);
+      let region      = numbersOnly.slice(ccLen, ccLen + 4); // up to 4 digits
+      let middleStart = ccLen + 4;
+      let middle      = numbersOnly.slice(middleStart, middleStart + 4); // up to 4 digits
+      let last        = numbersOnly.slice(middleStart + 4, middleStart + 8); // up to 4 digits
+
+      let formatted = '+';
+      if (cc) {
+        formatted += cc;
+      }
+      if (region) {
+        formatted += ' ' + region;
+      }
+      if (middle) {
+        formatted += '-' + middle;
+      }
+      if (last) {
+        formatted += '-' + last;
+      }
+      return formatted;
+    }
+
+    function formatUAE(numbersOnly) {
+      // Target format: +971 XX XXX XXXX
+      // We'll forcibly prefix with +971 no matter what the user typed
+      // Then region code (1?2 digits), then 3 digits, then 4 digits
+      // e.g. +971 50 123 4567
+      // If you want to allow other country codes than 971, remove the forced +971 logic
+      let forcedCC  = '971'; 
+      let region    = numbersOnly.slice(3, 5); // after the first 3 digits "971"
+      let next3     = numbersOnly.slice(5, 8);
+      let last4     = numbersOnly.slice(8, 12);
+
+      // If the user typed fewer than 3 digits, we can¡¯t form +971 properly. 
+      // So we do a check:
+      if (numbersOnly.length < 3) {
+        // Just show partial?
+        return '+' + numbersOnly;
+      }
+
+      let formatted = '+971';
+      if (region)  formatted += ' ' + region;
+      if (next3)   formatted += ' ' + next3;
+      if (last4)   formatted += ' ' + last4;
+
+      return formatted;
+    }
+
+    // *** UPDATED UK AUTO-FORMAT ***
+    function formatUK(numbersOnly) {
+      // We want +44 7123 456789 (mobile example)
+      let formatted = '';
+
+      if (numbersOnly.startsWith('44')) {
+        // e.g., "447123456789"
+        const cc   = numbersOnly.slice(0, 2);   // "44"
+        const rest = numbersOnly.slice(2);      // "7123456789"
+        const firstBlock = rest.slice(0, 4);    // "7123"
+        const secondBlock = rest.slice(4,9);      // "456789"
+
+        formatted = `+${cc} ${firstBlock}`;
+        if (secondBlock) {
+          formatted += ` ${secondBlock}`;
+        }
+
+      } else if (numbersOnly.startsWith('0')) {
+        // e.g., "07123456789" => let's do a simplified 0 + "7123" + "456789"
+        const zero = numbersOnly.slice(0, 1);   // "0"
+        const rest = numbersOnly.slice(1);      // "7123456789"
+        const firstBlock = rest.slice(0, 4);
+        const secondBlock = rest.slice(4);
+
+        formatted = `${zero}${firstBlock}`;
+        if (secondBlock) {
+          formatted += ` ${secondBlock}`;
+        }
+
+      } else {
+        // Default to +44 if no '44' or '0' prefix
+        const cc = '44';
+        const firstBlock = numbersOnly.slice(0, 4);
+        const secondBlock = numbersOnly.slice(4);
+
+        formatted = `+${cc} ${firstBlock}`;
+        if (secondBlock) {
+          formatted += ` ${secondBlock}`;
+        }
+      }
+
+      return formatted;
+    }
+
+    function formatEurope(numbersOnly) {
+      // Example: +49 30 1234 5678
+      // Pattern: +XX (1?4 digits) (3?4 digits) (3?4 digits)
+      // We'll do a simplified approach:
+      let cc   = numbersOnly.slice(0, 2); // e.g. '49'
+      let part1 = numbersOnly.slice(2, 6);  // up to 4 digits
+      let part2 = numbersOnly.slice(6, 10); // up to 4 digits
+      let part3 = numbersOnly.slice(10, 14); // up to 4 digits
+
+      let formatted = '+';
+      if (cc)   formatted += cc;
+      if (part1) formatted += ' ' + part1;
+      if (part2) formatted += ' ' + part2;
+      if (part3) formatted += ' ' + part3;
+
+      return formatted;
+    }
+
+    // 3) Listen for region changes
+    if (regionSelect && phoneInput) {
+      regionSelect.addEventListener('change', function() {
+        const region = regionSelect.value;
+        if (phoneFormats[region]) {
+          phoneInput.pattern = phoneFormats[region].pattern;
+          phoneInput.placeholder = phoneFormats[region].placeholder;
+        } else {
+          // Default if region not in phoneFormats or not selected
+          phoneInput.pattern = '';
+          phoneInput.placeholder = 'PHONE';
+        }
+        // Reset phone input on region change (optional)
+        phoneInput.value = '';
+      });
+
+      // 4) Auto-format on input
+      phoneInput.addEventListener('input', function() {
+        const region = regionSelect.value;
+        
+        // Strip out all non-digit characters, but keep leading '+' if the region uses it
+        let rawValue     = phoneInput.value;
+        let hasPlusSign  = rawValue.startsWith('+'); 
+        let numbersOnly  = rawValue.replace(/\D/g, ''); // All digits only
+
+        // Switch region and apply appropriate function:
+        let formattedValue = '';
+        switch (region) {
+          case 'USA':
+            formattedValue = formatUSA(numbersOnly);
+            break;
+          case 'Canada':
+            formattedValue = formatCanada(numbersOnly);
+            break;
+
+          case 'South America':
+            formattedValue = formatDefault(numbersOnly);
+            break;
+          case 'Asia-Pacific':
+            formattedValue = formatDefault(numbersOnly);
+            break;
+          case 'UAE':
+            formattedValue = formatDefault(numbersOnly);
+            break;
+          case 'UK':
+            formattedValue = formatDefault(numbersOnly);
+            break;
+          case 'Europe':
+            formattedValue = formatDefault(numbersOnly);
+            break;
+          default:
+            // If no region selected, no auto-format
+            formattedValue = rawValue;
+            break;
+        }
+
+        phoneInput.value = formattedValue;
+      });
+    }
+
+
+    const phoneInputs = document.querySelectorAll('#Phone,#Phone-2, #PHONE-2, #PHONE, #On-Site-Contact-Phone-Number-2, #On-Site-Contact-Phone-Number');
+
+
+function formatUSPhone(numbersOnly) {
+  let area   = numbersOnly.slice(0, 3);
+  let middle = numbersOnly.slice(3, 6);
+  let last   = numbersOnly.slice(6, 10);
+
+  let formatted = '';
+  if (area) {
+    formatted += `(${area}`;
+    if (area.length === 3) formatted += ')';
+  }
+  if (middle) {
+    formatted += ` ${middle}`;
+  }
+  if (last) {
+    formatted += `-${last}`;
+  }
+  return formatted;
+}
+
+phoneInputs.forEach(input => {
+  // Format on input
+  input.addEventListener('input', function() {
+    let rawValue = input.value;
+    let numbersOnly = rawValue.replace(/\D/g, ''); // Strip non-digits
+
+    // Enforce max of 10 digits
+    if (numbersOnly.length > 10) {
+      numbersOnly = numbersOnly.slice(0, 10);
+    }
+
+    input.value = formatUSPhone(numbersOnly);
+  });
+
+  // Allow only digits on keypress
+  input.addEventListener('keypress', function(e) {
+    if (!/\d/.test(e.key)) {
+      e.preventDefault();
+    }
+  });
+});
+    
+const zipInputs = document.querySelectorAll('#ZIPCODE, #ZIP-Code-2, #zipcode-3, #zipcode-2, #Zipcode');
+
+function formatZipCode(numbersOnly) {
+  if (numbersOnly.length < 5) {
+    return numbersOnly; // Allow typing up to 5 digits
+  } else if (numbersOnly.length <= 5) {
+    return numbersOnly; // 5-digit zip code
+  } else {
+    return `${numbersOnly.slice(0, 5)}-${numbersOnly.slice(5, 9)}`; // 9-digit zip code with hyphen
+  }
+}
+
+zipInputs.forEach(input => {
+  input.addEventListener('input', function () {
+    let rawValue = input.value;
+    let numbersOnly = rawValue.replace(/\D/g, ''); // Strip non-digits
+
+    if (numbersOnly.length > 9) {
+      numbersOnly = numbersOnly.slice(0, 9); // Limit to 9 digits
+    }
+
+    input.value = formatZipCode(numbersOnly);
+  });
+
+  input.addEventListener('blur', function () {
+    // Check if the input has at least 5 digits when it loses focus
+    let rawValue = input.value;
+    let numbersOnly = rawValue.replace(/\D/g, '');
+
+    if (numbersOnly.length < 5) {
+      input.classList.add('invalid'); // Add a visual cue (e.g., red border)
+      alert('Zip code must be at least 5 digits.');
+    } else {
+      input.classList.remove('invalid'); // Remove the visual cue if valid
+    }
+  });
+
+  input.addEventListener('keypress', function (e) {
+    if (!/\d/.test(e.key)) {
+      e.preventDefault(); // Allow only numeric input
+    }
+  });
+});
+
+    
+    
+     const stateField = document.getElementById('state-field');
+
+    // Full list of US states, territories, and armed forces
+    const states = [
+      "Alabama", "Alaska", "American Samoa", "Arizona", "Arkansas",
+      "California", "Colorado", "Connecticut", "Delaware",
+      "District of Columbia", "Florida", "Georgia", "Guam", "Hawaii",
+      "Idaho", "Illinois", "Indiana", "Iowa", "Kansas", "Kentucky",
+      "Louisiana", "Maine", "Maryland", "Massachusetts", "Michigan",
+      "Minnesota", "Mississippi", "Missouri", "Montana", "Nebraska",
+      "Nevada", "New Hampshire", "New Jersey", "New Mexico", "New York",
+      "North Carolina", "North Dakota", "Northern Mariana Islands",
+      "Ohio", "Oklahoma", "Oregon", "Pennsylvania", "Puerto Rico",
+      "Rhode Island", "South Carolina", "South Dakota", "Tennessee",
+      "Texas", "Utah", "U.S. Virgin Islands", "Vermont", "Virginia",
+      "Washington", "West Virginia", "Wisconsin", "Wyoming",
+      "Armed Forces Americas", "Armed Forces Europe", "Armed Forces Pacific"
+    ];
+
+    // (Optional) Add an initial empty option or placeholder
+    const defaultOption = document.createElement('option');
+    defaultOption.value = "";
+    defaultOption.textContent = "Select a State...";
+    defaultOption.selected = true;
+    defaultOption.disabled = true;
+    stateField.appendChild(defaultOption);
+
+    // Populate the select with state/territory options
+    states.forEach(state => {
+      const option = document.createElement('option');
+      option.value = state;
+      option.textContent = state;
+      stateField.appendChild(option);
+    });
+
+
+
+
+
+
+    });
+</script>
+<style>
+ /* Style for the red asterisk */
+        .red-asterisk::before {
+            content: '*';
+            color: red;
+        }
+        .required-placeholder {      
+            color: #fff;
+            letter-spacing: 1px;
+            font-family: Roboto, sans-serif;
+            font-size: 14px;
+            font-weight: 300;
+				}
+
+        .required-select {
+            position: absolute;
+            right: 10%;
+            top: 55%;
+            transform: translateY(-50%);
+            color: red;
+            font-family: Roboto, sans-serif;
+            font-size: 14px;
+            font-weight: 300;
+            pointer-events: none;
+        }
+                /* Style to ensure proper positioning of the select */
+        .required-select-wrapper {
+            position: relative;
+            display: inline-block;
+            width: 100%;
+        }
+
+        .required-input{
+      color: red;
+      position: absolute;
+      right: 0.2rem;
+      transform: translateY(-150%);
+      font-size: 1.5rem;
+
+  }
+          .required-select{
+		color: red;
+    position: absolute;
+    right: 1.1rem;
+    transform: translateY(-50%);
+    font-size: 1.1rem;
+    font-weight: bold;
+
+  }
+
+/* Accessories Page Styles */
+
+/* Wrapper for inputs on the accessories page */
+/* Accessories Page Specific Styles */
+
+/* Wrapper for each input */
+.accessories-input-wrapper {
+    position: relative; /* Relative for asterisk positioning */
+    display: inline-block; /* Prevent breaking layout */
+    width: 48.5%; /* Match the input width */
+    vertical-align: top; /* Align inputs properly */
+}
+
+/* Input styles */
+.accessories-input-wrapper .warranty_field {
+    border: 1px solid var(--white);
+    background-color: var(--black);
+   
+    letter-spacing: .7px;
+    width: 100%; /* Full width within wrapper */
+    height: 50px; /* Set consistent height */
+    margin: 0; /* Prevent margin conflicts */
+    padding: 16px;
+    font-family: Roboto, sans-serif;
+    font-size: 15px;
+    line-height: 17px;
+    box-sizing: border-box; /* Ensure padding doesn't break width */
+}
+
+/* Asterisk styles */
+.accessories-input-wrapper .required-asterisk {
+      color: red;
+      position: absolute;
+      right: 0.2rem;
+      transform: translateY(-200%);
+      font-size: 1.5rem;
+}
+
+.accessories-select-wrapper {
+    position: relative; /* Relative for asterisk positioning */
+    display: inline-block; /* Prevent breaking layout */
+    width: 48.5%; /* Match the input width */
+    vertical-align: top; /* Align inputs properly */
+}
+
+/* Input styles */
+.accessories-select-wrapper .warranty_field {
+    border: 1px solid var(--white);
+    background-color: var(--black);
+   
+    letter-spacing: .7px;
+    width: 100%; /* Full width within wrapper */
+    height: 50px; /* Set consistent height */
+    margin: 0; /* Prevent margin conflicts */
+    padding: 16px;
+    font-family: Roboto, sans-serif;
+    font-size: 15px;
+    line-height: 17px;
+    box-sizing: border-box; /* Ensure padding doesn't break width */
+}
+
+/* Asterisk styles */
+.accessories-select-wrapper .required-select-asterisk {
+      color: red;
+      position: absolute;
+      right: 0.7rem;
+      transform: translateY(-200%);
+      font-size: 1.5rem;
+}
+
+/* Wrapper for input fields */
+.acft-input-wrapper {
+    position: relative;
+    display: inline-block;
+    width: 104%;  /* Spacing between columns */
+}
+
+/* Wrapper for select fields */
+.acft-select-wrapper {
+    position: relative;
+    display: inline-block;
+    width: 50%; 
+}
+
+/* Input styles */
+.acft-input-wrapper .text-field-acft,
+.acft-select-wrapper .text-field-acft {
+    border: 1px solid var(--white);
+    background-color: var(--black);
+    letter-spacing: 0.7px;
+    width: 100%; /* Full width inside wrapper */
+    height: 50px;
+    margin: 0;
+    padding: 16px;
+    font-family: Roboto, sans-serif;
+    font-size: 15px;
+    line-height: 17px;
+    box-sizing: border-box;
+}
+
+.required-select-acft-asterisk {
+      color: red;
+      position: absolute;
+      right: 1rem;
+      transform: translateY(-150%);
+      font-size: 1.5rem;
+}
+
+.required-input-acft-asterisk {
+      color: red;
+      position: absolute;
+      right: 0.7rem;
+      transform: translateY(-150%);
+      font-size: 1.5rem;
+}
+
+/* Wrapper for input fields */
+.tyler-input-wrapper {
+    position: relative; /* For positioning the asterisk */
+    display: inline-block; /* Align inputs properly */
+    width: 110%;
+    margin: 0px 7px 0px 0px;
+}
+
+/* Input field styles */
+.tyler-input-wrapper .text-field-30 {
+    border: 1px solid var(--white);
+    background-color: var(--black);
+    padding: 5px 14px;
+    font-family: Roboto, sans-serif;
+    font-size: 16px;
+    line-height: 22px;
+    width: 100%; /* Full width inside the wrapper */
+    box-sizing: border-box; /* Ensure padding and borders don't affect width */
+}
+
+/* Asterisk styles */
+.required-input-tyler-asterisk {
+    color: red;
+    position: absolute;
+    right: -0.1rem; /* Adjust based on layout */
+    top: 50%; /* Vertically center */
+    transform: translateY(-50%);
+    font-size: 16px;
+    line-height: 1;
+}
+
+/* Wrapper for input fields */
+.quote-input-wrapper {
+    position: relative;
+    display: inline-block;
+    width: 100%;  /* Adjusted width for better alignment */
+}
+
+/* Wrapper for select fields */
+.quote-select-wrapper {
+    position: relative;
+    display: inline-block;
+    width: 100%; 
+}
+
+/* Input styles */
+.quote-input-wrapper .text-field-request,
+.quote-select-wrapper .text-field-request {
+    border: 1px solid var(--white);
+    background-color: var(--black);
+    letter-spacing: 0.7px;
+    width: 100%; /* Full width inside wrapper */
+    height: 50px;
+    margin: 0;
+    padding: 16px;
+    font-family: Roboto, sans-serif;
+    font-size: 15px;
+    line-height: 17px;
+    box-sizing: border-box;
+}
+
+.required-select-quote-asterisk {
+    color: red;
+    position: absolute;
+    right: 1rem;
+    transform: translateY(-150%);
+    font-size: 1.5rem;
+}
+
+.required-input-quote-asterisk {
+    color: red;
+    position: absolute;
+    right: 0.7rem;
+    transform: translateY(-150%);
+    font-size: 1.5rem;
+}
+
+select option {
+  background-color: black; /* Background of the options */
+ 
+}
+
+</style>
