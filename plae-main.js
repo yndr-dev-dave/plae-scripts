@@ -1,5 +1,16 @@
 document.addEventListener("DOMContentLoaded", function () {
-    const files = [
+    // Base URL for jsDelivr
+    const baseURL = "https://cdn.jsdelivr.net/gh/yndr-dev-dave/plae-scripts@main/";
+
+    // Load CSS file first
+    let cssLink = document.createElement("link");
+    cssLink.rel = "stylesheet";
+    cssLink.href = baseURL + "plae-custom-css.css"; // Your CSS file
+    document.head.appendChild(cssLink);
+    console.log("? Loaded CSS:", cssLink.href);
+
+    // Define script files to load
+    const scripts = [
         "accessories.js",
         "actf.js",
         "careers.js",
@@ -8,29 +19,19 @@ document.addEventListener("DOMContentLoaded", function () {
         "functions.js",
         "request-quote.js",
         "required-field.js",
-        "tylerhobsoncomingsoon.js",
-        "plae-custom-css.css" // This is the CSS file
+        "tylerhobsoncomingsoon.js"
     ];
 
-    // Base URL for jsDelivr
-    const baseURL = "https://cdn.jsdelivr.net/gh/yndr-dev-dave/plae-scripts@main/";
+    console.log("Loading JS files ...");
 
-    // Dynamically load files based on type
-    files.forEach(fileName => {
-        if (fileName.endsWith(".js")) {
-            // Load JavaScript files
-            let script = document.createElement("script");
-            script.src = baseURL + fileName;
-            script.async = true;
-            document.body.appendChild(script);
-        } else if (fileName.endsWith(".css")) {
-            // Load CSS files
-            let link = document.createElement("link");
-            link.rel = "stylesheet";
-            link.href = baseURL + fileName;
-            document.head.appendChild(link);
-        }
+    // Dynamically create and append script elements
+    scripts.forEach(scriptName => {
+        let script = document.createElement("script");
+        script.src = baseURL + scriptName;
+        script.async = true;
+        document.body.appendChild(script);
+        console.log("? Loaded JS:", script.src);
     });
 
-    console.log("Files loaded:", files);
+    console.log("Script loading complete.");
 });
