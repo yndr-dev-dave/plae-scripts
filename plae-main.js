@@ -1,15 +1,5 @@
 document.addEventListener("DOMContentLoaded", function () {
-    // Base URL for jsDelivr
-    const baseURL = "https://cdn.jsdelivr.net/gh/yndr-dev-dave/plae-scripts@main/";
-
-    // Load CSS file first
-    let cssLink = document.createElement("link");
-    cssLink.rel = "stylesheet";
-    cssLink.href = baseURL + "plae-custom-css.css"; // Your CSS file
-    document.head.appendChild(cssLink);
-    console.log("? Loaded CSS:", cssLink.href);
-
-    // Define script files to load
+    // Define script names in an array
     const scripts = [
         "accessories.js",
         "actf.js",
@@ -19,19 +9,20 @@ document.addEventListener("DOMContentLoaded", function () {
         "functions.js",
         "request-quote.js",
         "required-field.js",
-        "tylerhobsoncomingsoon.js"
+        "tylerhobsoncomingsoon.js",
+        "plae-custom-css.css"
     ];
 
-    console.log("Loading JS files ...");
+    // Base URL for jsDelivr
+    const baseURL = "https://cdn.jsdelivr.net/gh/yndr-dev-dave/plae-scripts@main/";
 
     // Dynamically create and append script elements
     scripts.forEach(scriptName => {
         let script = document.createElement("script");
         script.src = baseURL + scriptName;
-        script.async = true;
+        script.async = true; // Allow scripts to load asynchronously
         document.body.appendChild(script);
-        console.log("? Loaded JS:", script.src);
     });
 
-    console.log("Script loading complete.");
+    console.log("Scripts loaded:", scripts);
 });

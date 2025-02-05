@@ -1,5 +1,10 @@
+// Create a <style> element
+let style = document.createElement("style");
+style.type = "text/css";
 
- /* Style for the red asterisk */
+// Define CSS as a JavaScript template literal
+style.innerHTML = `
+/* Style for the red asterisk */
         .red-asterisk::before {
             content: '*';
             color: red;
@@ -245,3 +250,7 @@ select option {
   background-color: black; /* Background of the options */
  
 }
+`;
+
+// Append the <style> element to the <head>
+document.head.appendChild(style);
