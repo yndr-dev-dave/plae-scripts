@@ -251,7 +251,7 @@ style.innerHTML = `
 .slat-input-wrapper {
     position: relative;
     display: inline-block;
-    width: 104%;  /* Adjusted for spacing */
+    width: 50%;  /* Adjusted for spacing */
 }
 
 .slat-select-wrapper {
@@ -259,23 +259,6 @@ style.innerHTML = `
     display: inline-block;
     width: 50%; 
 }
-
-/* SLAT Field Styles */
-.slat-input-wrapper .text-field-slat,
-.slat-select-wrapper .text-field-slat {
-    border: 1px solid var(--white);
-    background-color: var(--black);
-    letter-spacing: 0.7px;
-    width: 100%;
-    height: 50px;
-    margin: 0;
-    padding: 16px;
-    font-family: Roboto, sans-serif;
-    font-size: 15px;
-    line-height: 17px;
-    box-sizing: border-box;
-}
-
 
 .required-select-slat-asterisk {
       color: red;
