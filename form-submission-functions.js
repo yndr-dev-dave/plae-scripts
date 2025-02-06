@@ -117,10 +117,12 @@ const pathsToMatch = [
   '/career',
   '/consumer-confirmation',
   '/order-confirmation',
-  'tylerhobsoncomingsoon',
+  '/tylerhobsoncomingsoon',
   '/accessories',
   '/work-with-us',
-  '/request-quote'
+  '/request-quote',
+  '/slat'
+
 ];
 
 const currentPath = window.location.pathname;
