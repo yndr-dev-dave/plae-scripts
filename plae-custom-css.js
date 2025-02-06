@@ -247,26 +247,26 @@ style.innerHTML = `
 }
 /*slat css*/
 /* Wrapper for input fields */
+/* SLAT Input and Select Wrappers */
 .slat-input-wrapper {
     position: relative;
     display: inline-block;
-    width: 104%;  /* Spacing between columns */
+    width: 104%;  /* Adjusted for spacing */
 }
 
-/* Wrapper for select fields */
 .slat-select-wrapper {
     position: relative;
     display: inline-block;
     width: 50%; 
 }
 
-/* Input styles */
+/* SLAT Field Styles */
 .slat-input-wrapper .text-field-slat,
 .slat-select-wrapper .text-field-slat {
     border: 1px solid var(--white);
     background-color: var(--black);
     letter-spacing: 0.7px;
-    width: 100%; /* Full width inside wrapper */
+    width: 100%;
     height: 50px;
     margin: 0;
     padding: 16px;
@@ -276,10 +276,20 @@ style.innerHTML = `
     box-sizing: border-box;
 }
 
+
 .required-select-slat-asterisk {
       color: red;
       position: absolute;
       right: 1rem;
+      transform: translateY(-150%);
+      font-size: 1.5rem;
+}
+
+
+.required-input-slat-asterisk {
+      color: red;
+      position: absolute;
+      right: 0.7rem;
       transform: translateY(-150%);
       font-size: 1.5rem;
 }
