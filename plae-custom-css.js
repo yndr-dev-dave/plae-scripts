@@ -284,13 +284,7 @@ style.innerHTML = `
       font-size: 1.5rem;
 }
 
-.required-input-slat-asterisk {
-      color: red;
-      position: absolute;
-      right: 0.7rem;
-      transform: translateY(-150%);
-      font-size: 1.5rem;
-}
+
 select option {
   background-color: black; /* Background of the options */
  
