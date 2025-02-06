@@ -251,13 +251,15 @@ style.innerHTML = `
 .slat-input-wrapper {
     position: relative;
     display: inline-block;
-    width: 50%;  /* Adjusted for spacing */
+    width: 250px;
+    min-width: 210px;
 }
 
 .slat-select-wrapper {
     position: relative;
     display: inline-block;
-    width: 50%; 
+    width: 250px;
+    min-width: 210px;
 }
 
 .required-select-slat-asterisk {
@@ -275,6 +277,16 @@ style.innerHTML = `
       right: 0.7rem;
       transform: translateY(-150%);
       font-size: 1.5rem;
+}
+
+@media screen and (max-width: 763px) {
+  .required-select-slat-asterisk {
+    right: 2.5rem;
+  }
+  
+  .required-input-slat-asterisk {
+    right: 1.7rem;
+  }
 }
 
 
