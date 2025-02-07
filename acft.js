@@ -1,3 +1,5 @@
+document.addEventListener("DOMContentLoaded", function () {
+
 if (window.location.pathname === '/acft') {
 
     const targetElement = document.querySelector('.text-field-acft.message');
@@ -42,3 +44,5 @@ if (window.location.pathname === '/acft') {
             wrapperSelect.appendChild(asteriskSelectDiv);
         });
     }
+
+});
