@@ -40,7 +40,7 @@ const phoneFormats = {
     // Example: +81 3-1234-5678 (Japan) 
     // Pattern: +XXX (1?4 digits) - (3?4 digits) - (4 digits)
     pattern: '\\d{10,15}',
-    placeholder: '+81 3-1234-5678'
+    placeholder: ''
   },
   'UAE': {
     // Example: +971 50 123 4567
