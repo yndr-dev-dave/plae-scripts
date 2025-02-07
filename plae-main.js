@@ -1,5 +1,4 @@
-
-    // Define script names in an array
+window.addEventListener("load", () => {
     const scripts = [
         "accessories.js",
         "actf.js",
@@ -14,16 +13,14 @@
         "slat-wishlist.js"
     ];
 
-    // Base URL for jsDelivr
     const baseURL = "https://cdn.jsdelivr.net/gh/yndr-dev-dave/plae-scripts@latest/";
 
-    // Dynamically create and append script elements
     scripts.forEach(scriptName => {
         let script = document.createElement("script");
         script.src = baseURL + scriptName;
-        script.async = true; // Allow scripts to load asynchronously
+        script.async = true;
+        script.onload = () => console.log(`${scriptName} loaded`);
+        script.onerror = () => console.error(`Error loading ${scriptName}`);
         document.body.appendChild(script);
     });
-
-    console.log("Scripts loaded:", scripts);
-
+});
