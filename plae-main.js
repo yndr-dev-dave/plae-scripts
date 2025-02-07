@@ -15,7 +15,7 @@ document.addEventListener("DOMContentLoaded", function () {
     ];
 
     // Base URL for jsDelivr
-    const baseURL = "https://cdn.jsdelivr.net/gh/yndr-dev-dave/plae-scripts@latest/";
+    const baseURL = "https://cdn.jsdelivr.net/gh/yndr-dev-dave/plae-scripts@main/";
 
     // Dynamically create and append script elements
     scripts.forEach(scriptName => {
