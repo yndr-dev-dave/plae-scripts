@@ -114,7 +114,7 @@ event.preventDefault();
 
 const pathsToMatch = [
   '/acft',
-  '/career',
+  '/careers',
   '/consumer-confirmation',
   '/order-confirmation',
   '/tylerhobsoncomingsoon',

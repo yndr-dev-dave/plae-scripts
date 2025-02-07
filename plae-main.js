@@ -1,4 +1,4 @@
-document.addEventListener("DOMContentLoaded", function () {
+
     // Define script names in an array
     const scripts = [
         "accessories.js",
@@ -26,4 +26,4 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
     console.log("Scripts loaded:", scripts);
-});
+
