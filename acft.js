@@ -1,7 +1,7 @@
 document.addEventListener("DOMContentLoaded", function () {
 
 if (window.location.pathname === '/acft') {
-
+console.log("ACFT Page")
     const targetElement = document.querySelector('.text-field-acft.message');
       
       if (targetElement) {
