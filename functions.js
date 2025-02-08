@@ -137,85 +137,65 @@ function formatCanada(numbersOnly) {
 
 
 // Get the REGION dropdown element and zip code input fields
-const zipInputs = document.querySelectorAll('#ZIPCODE, #ZIP-Code-2, #zipcode-3, #zipcode-2, #zipcode-22, #Zipcode');
 
-// Function to format US/Canada zip codes (5-digit, or 9-digit with a hyphen)
-function formatZipCode(numbersOnly) {
-  if (numbersOnly.length < 5) {
-    return numbersOnly; // Under 5 digits, leave as is
-  } else if (numbersOnly.length === 5) {
-    return numbersOnly; // Exactly 5 digits, no formatting needed
+const zipInputs = document.querySelectorAll(
+  '#ZIPCODE, #ZIP-Code-2, #zipcode-3, #zipcode-2, #zipcode-22, #Zipcode'
+);
+
+// For USA/Canada, format by inserting a hyphen after the first 5 digits.
+// (If fewer than 5 digits, no hyphen is added.)
+function formatZipCodeUS(numbersOnly) {
+  if (numbersOnly.length <= 5) {
+    return numbersOnly;
   } else {
-    // Format as 5-digit + hyphen + up to 4 more digits (max 9 total)
-    return `${numbersOnly.slice(0, 5)}-${numbersOnly.slice(5, 9)}`;
+    return `${numbersOnly.slice(0, 5)}-${numbersOnly.slice(5, 15)}`;
   }
 }
 
-// Function to update zip inputs based on the region selection
+// Update zip inputs based on the region selection
 function updateZipInputs() {
   zipInputs.forEach(input => {
-    // Strip non-digits from current input value
+    // Remove any non-digit characters
     let rawValue = input.value;
     let numbersOnly = rawValue.replace(/\D/g, '');
     
-    // If region is USA or Canada
+    // Limit to a maximum of 15 digits for all regions
+    if (numbersOnly.length > 15) {
+      numbersOnly = numbersOnly.slice(0, 15);
+    }
+    
     if (regionSelect.value === 'USA' || regionSelect.value === 'Canada') {
-      // Limit to 9 digits and format accordingly
-      if (numbersOnly.length > 9) {
-        numbersOnly = numbersOnly.slice(0, 9);
-      }
-      input.value = formatZipCode(numbersOnly);
-      // Set pattern to match either 5 digits or 5+4-digit zip (e.g. 12345 or 12345-6789)
-      input.setAttribute('pattern', '\\d{5}(-\\d{4})?');
+      input.value = formatZipCodeUS(numbersOnly);
+      // Pattern: up to 5 digits, optionally a hyphen then up to 10 more digits
+      input.setAttribute('pattern', '^\\d{0,5}(-\\d{0,10})?$');
     } else {
-      // For other regions, simply limit to 15 digits (no formatting)
-      if (numbersOnly.length > 15) {
-        numbersOnly = numbersOnly.slice(0, 15);
-      }
       input.value = numbersOnly;
-      // Set a pattern for up to 15 digits
-      input.setAttribute('pattern', '\\d{1,15}');
+      input.setAttribute('pattern', '^\\d{0,15}$');
     }
   });
 }
 
-// Listen for changes on the REGION dropdown to update zip inputs immediately
+// Listen for changes on the REGION dropdown so that zip inputs are updated immediately
 if (regionSelect) {
-  regionSelect.addEventListener('change', function() {
-    updateZipInputs();
-  });
+  regionSelect.addEventListener('change', updateZipInputs);
 }
 
-// Add event listeners for each zip input for live formatting/validation
+// For live formatting as the user types, apply the same logic
 zipInputs.forEach(input => {
-  // Format the zip code on input
   input.addEventListener('input', function () {
     let rawValue = input.value;
     let numbersOnly = rawValue.replace(/\D/g, '');
     
     if (regionSelect.value === 'USA' || regionSelect.value === 'Canada') {
-      if (numbersOnly.length > 9) {
-        numbersOnly = numbersOnly.slice(0, 9);
+      if (numbersOnly.length > 15) {
+        numbersOnly = numbersOnly.slice(0, 15);
       }
-      input.value = formatZipCode(numbersOnly);
+      input.value = formatZipCodeUS(numbersOnly);
     } else {
       if (numbersOnly.length > 15) {
         numbersOnly = numbersOnly.slice(0, 15);
       }
       input.value = numbersOnly;
-    }
-  });
-
-  // On blur, if region is USA/Canada, check for a minimum of 5 digits
-  input.addEventListener('blur', function () {
-    let rawValue = input.value;
-    let numbersOnly = rawValue.replace(/\D/g, '');
-    
-    if ((regionSelect.value === 'USA' || regionSelect.value === 'Canada') && numbersOnly.length < 5) {
-      input.classList.add('invalid'); // For example, add a red border via CSS
-      alert('Zip code must be at least 5 digits.');
-    } else {
-      input.classList.remove('invalid');
     }
   });
 
@@ -226,6 +206,7 @@ zipInputs.forEach(input => {
     }
   });
 });
+
 
 
 
