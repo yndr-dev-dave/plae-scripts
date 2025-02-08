@@ -345,7 +345,7 @@ if (!/\d/.test(e.key)) {
 });
 
 // Get the REGION dropdown element and zip code input fields
-const zipInputs = document.querySelectorAll('#ZIPCODE, #ZIP-Code-2, #zipcode-3, #zipcode-2, #Zipcode');
+const zipInputs = document.querySelectorAll('#ZIPCODE, #ZIP-Code-2, #zipcode-3, #zipcode-2, #zipcode-22, #Zipcode');
 
 // Function to format US/Canada zip codes (5-digit, or 9-digit with a hyphen)
 function formatZipCode(numbersOnly) {
