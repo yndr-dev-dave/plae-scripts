@@ -344,49 +344,65 @@ if (!/\d/.test(e.key)) {
 });
 });
 
+// Get the REGION dropdown element and zip code input fields
 const zipInputs = document.querySelectorAll('#ZIPCODE, #ZIP-Code-2, #zipcode-3, #zipcode-2, #Zipcode');
 
+// Formatting function for US/Canada zip codes (5-digit or 9-digit with hyphen)
 function formatZipCode(numbersOnly) {
-if (numbersOnly.length < 5) {
-return numbersOnly; // Allow typing up to 5 digits
-} else if (numbersOnly.length <= 5) {
-return numbersOnly; // 5-digit zip code
-} else {
-return `${numbersOnly.slice(0, 5)}-${numbersOnly.slice(5, 9)}`; // 9-digit zip code with hyphen
-}
+  if (numbersOnly.length < 5) {
+    return numbersOnly; // Allow typing up to 5 digits
+  } else if (numbersOnly.length === 5) {
+    return numbersOnly; // 5-digit zip code
+  } else {
+    return `${numbersOnly.slice(0, 5)}-${numbersOnly.slice(5, 9)}`; // Format as 9-digit zip code with a hyphen
+  }
 }
 
 zipInputs.forEach(input => {
-input.addEventListener('input', function () {
-let rawValue = input.value;
-let numbersOnly = rawValue.replace(/\D/g, ''); // Strip non-digits
+  // On input, process the zip code formatting based on the selected region
+  input.addEventListener('input', function () {
+    let rawValue = input.value;
+    let numbersOnly = rawValue.replace(/\D/g, ''); // Remove non-digit characters
 
-if (numbersOnly.length > 9) {
-  numbersOnly = numbersOnly.slice(0, 9); // Limit to 9 digits
-}
+    if (regionSelect && regionSelect.value === 'USA') {
+      // For USA/Canada: Limit to 9 digits and apply formatting
+      if (numbersOnly.length > 9) {
+        numbersOnly = numbersOnly.slice(0, 9);
+      }
+      input.value = formatZipCode(numbersOnly);
+    } else {
+      // For other regions: Limit to 15 digits without formatting
+      if (numbersOnly.length > 15) {
+        numbersOnly = numbersOnly.slice(0, 15);
+      }
+      input.value = numbersOnly;
+    }
+  });
 
-input.value = formatZipCode(numbersOnly);
+  // On blur, validate US/Canada zip codes to ensure at least 5 digits
+  input.addEventListener('blur', function () {
+    let rawValue = input.value;
+    let numbersOnly = rawValue.replace(/\D/g, '');
+
+    if (regionSelect && regionSelect.value === 'USA' ) {
+      if (numbersOnly.length < 5) {
+        input.classList.add('invalid'); // Visual cue for invalid input
+        alert('Zip code must be at least 5 digits.');
+      } else {
+        input.classList.remove('invalid');
+      }
+    }
+    // For other regions, no minimum length validation is applied
+  });
+
+  // Restrict key presses to only allow numeric input
+  input.addEventListener('keypress', function (e) {
+    if (!/\d/.test(e.key)) {
+      e.preventDefault();
+    }
+  });
 });
 
-input.addEventListener('blur', function () {
-// Check if the input has at least 5 digits when it loses focus
-let rawValue = input.value;
-let numbersOnly = rawValue.replace(/\D/g, '');
-
-if (numbersOnly.length < 5) {
-  input.classList.add('invalid'); // Add a visual cue (e.g., red border)
-  alert('Zip code must be at least 5 digits.');
-} else {
-  input.classList.remove('invalid'); // Remove the visual cue if valid
-}
-});
-
-input.addEventListener('keypress', function (e) {
-if (!/\d/.test(e.key)) {
-  e.preventDefault(); // Allow only numeric input
-}
-});
-});
 
 
 
