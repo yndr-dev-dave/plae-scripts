@@ -1,3 +1,4 @@
+console.log("rev:0.0.1")
 // Query multiple fields by their IDs or class
 const textFields = document.querySelectorAll('#City, #City-2'); // Add your field IDs or classes here
 
