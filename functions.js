@@ -15,12 +15,11 @@ textFields.forEach(field => {
 });
 
 
-//Region Phone Validation
+// Region Phone Validation
 const regionSelect = document.getElementById('REGION');
 const phoneInput   = document.getElementById('region-PHONE');
 
-// 1) Define phone formats and placeholder examples for each region
-//    (You can tweak the regex/patterns to match your exact needs.)
+// Define phone formats and placeholder examples for each region
 const phoneFormats = {
   'USA': {
     pattern: '^\\(\\d{3}\\) \\d{3}-\\d{4}$', // e.g. (123) 456-7890
@@ -30,52 +29,91 @@ const phoneFormats = {
     pattern: '^\\(\\d{3}\\) \\d{3}-\\d{4}$', // e.g. (123) 456-7890
     placeholder: '(123) 456-7890'
   },
+  // For all other regions, we now use a default pattern of 1–15 digits.
   'South America': {
-    // Example: +55 11-2345-6789
-    // Pattern: +XX (1?3 digits) - (3?4 digits) - (4 digits)
-    pattern: '\\d{10,15}',
+    pattern: '\\d{1,15}',
     placeholder: '+55 11-2345-6789'
   },
   'Asia-Pacific': {
-    // Example: +81 3-1234-5678 (Japan) 
-    // Pattern: +XXX (1?4 digits) - (3?4 digits) - (4 digits)
-    pattern: '\\d{10,15}',
+    pattern: '\\d{1,15}',
     placeholder: 'PHONE'
   },
   'UAE': {
-    // Example: +971 50 123 4567
-    pattern: '\\d{10,15}',
+    pattern: '\\d{1,15}',
     placeholder: '+971 50 123 4567'
   },
   'UK': {
-    // Example: +44 7123 456789 or 07123 456789
-    pattern: '\\d{10,15}',
+    pattern: '\\d{1,15}',
     placeholder: '+44 7123 456789'
   },
   'Europe': {
-    // Highly simplified example: +49 30 1234 5678
-    // Pattern: +XX (1?4 digits) (3?4 digits) (3?4 digits)
-    pattern: '\\d{10,15}',
+    pattern: '\\d{1,15}',
     placeholder: '+49 30 1234 5678'
   }
 };
 
-// 2) Auto-format functions for each region
-//    (Note: These are simplified for demonstration.)
+// Listen for changes on the REGION dropdown
+if (regionSelect && phoneInput) {
+  regionSelect.addEventListener('change', function() {
+    const region = regionSelect.value;
+    if (phoneFormats[region]) {
+      phoneInput.pattern = phoneFormats[region].pattern;
+      phoneInput.placeholder = phoneFormats[region].placeholder;
+    } else {
+      // If region is not one of the keys above, apply the default pattern
+      phoneInput.pattern = '\\d{1,15}';
+      phoneInput.placeholder = 'PHONE';
+    }
+    // Optionally clear the phone input when the region changes
+    phoneInput.value = '';
+  });
+
+  // Auto-format on input
+  phoneInput.addEventListener('input', function() {
+    const region = regionSelect.value;
+    let rawValue = phoneInput.value;
+    let numbersOnly = rawValue.replace(/\D/g, ''); // Keep only digits
+
+    let formattedValue = '';
+    // Apply special formatting only for USA/Canada;
+    // otherwise, simply limit to 15 digits
+    switch (region) {
+      case 'USA':
+        formattedValue = formatUSA(numbersOnly);
+        break;
+      case 'Canada':
+        formattedValue = formatCanada(numbersOnly);
+        break;
+      case 'South America':
+      case 'Asia-Pacific':
+      case 'UAE':
+      case 'UK':
+      case 'Europe':
+        formattedValue = formatDefault(numbersOnly);
+        break;
+      default:
+        // If no recognized region is selected, use the raw numbers (limited to 15)
+        formattedValue = formatDefault(numbersOnly);
+        break;
+    }
+
+    phoneInput.value = formattedValue;
+  });
+}
+
+// Formatting functions
 function formatDefault(numbersOnly) {
-// Limit the input to a maximum of 15 digits
-if (numbersOnly.length > 15) {
-return numbersOnly.slice(0, 15);
+  // Limit the input to a maximum of 15 digits
+  if (numbersOnly.length > 15) {
+    return numbersOnly.slice(0, 15);
+  }
+  return numbersOnly;
 }
 
-return numbersOnly; // Return the numbers as-is if within the limit
-}
 function formatUSA(numbersOnly) {
-  // (xxx) xxx-xxxx
-  let area   = numbersOnly.slice(0, 3);
+  let area = numbersOnly.slice(0, 3);
   let middle = numbersOnly.slice(3, 6);
-  let last   = numbersOnly.slice(6, 10);
-
+  let last = numbersOnly.slice(6, 10);
   let formatted = '';
   if (area) {
     formatted += `(${area}`;
@@ -92,257 +130,11 @@ function formatUSA(numbersOnly) {
   return formatted;
 }
 
-// Canada uses the same format as the USA example
 function formatCanada(numbersOnly) {
+  // Canada uses the same formatting as USA
   return formatUSA(numbersOnly);
 }
 
-function formatSouthAmerica(numbersOnly) {
-  // Example target format: +XX XX-XXXX-XXXX
-  // But the pattern suggests we can have 1?3 digits in the second group
-  // We'll do a simplified approach: +cc ( up to 3 digits ) - (3?4 digits ) - (4 digits)
-  let cc        = numbersOnly.slice(0, 2); // +XX
-  let region    = numbersOnly.slice(2, 5); // up to 3 digits
-  let middle    = numbersOnly.slice(5, 9); // up to 4 digits
-  let last      = numbersOnly.slice(9, 13);
-
-  let formatted = '+';
-  if (cc) {
-    formatted += cc;
-  }
-  if (region) {
-    formatted += ' ' + region;
-  }
-  if (middle) {
-    formatted += '-' + middle;
-  }
-  if (last) {
-    formatted += '-' + last;
-  }
-  return formatted;
-}
-
-function formatAsiaPacific(numbersOnly) {
-  // Example target: +XXX X-XXXX-XXXX
-  // We'll assume +cc or +ccc for the country code
-  // Then up to 4 digits, then 3?4 digits, then 4 digits
-  // Example input: +81 3-1234-5678 => cc=81, region=3, middle=1234, last=5678
-  // or +673 1234-5678-9999, etc.
-  let ccLen       = numbersOnly.length > 2 ? 3 : 2; // if we have at least 3 digits, assume a 3-digit country code
-  let cc          = numbersOnly.slice(0, ccLen);
-  let region      = numbersOnly.slice(ccLen, ccLen + 4); // up to 4 digits
-  let middleStart = ccLen + 4;
-  let middle      = numbersOnly.slice(middleStart, middleStart + 4); // up to 4 digits
-  let last        = numbersOnly.slice(middleStart + 4, middleStart + 8); // up to 4 digits
-
-  let formatted = '+';
-  if (cc) {
-    formatted += cc;
-  }
-  if (region) {
-    formatted += ' ' + region;
-  }
-  if (middle) {
-    formatted += '-' + middle;
-  }
-  if (last) {
-    formatted += '-' + last;
-  }
-  return formatted;
-}
-
-function formatUAE(numbersOnly) {
-  // Target format: +971 XX XXX XXXX
-  // We'll forcibly prefix with +971 no matter what the user typed
-  // Then region code (1?2 digits), then 3 digits, then 4 digits
-  // e.g. +971 50 123 4567
-  // If you want to allow other country codes than 971, remove the forced +971 logic
-  let forcedCC  = '971'; 
-  let region    = numbersOnly.slice(3, 5); // after the first 3 digits "971"
-  let next3     = numbersOnly.slice(5, 8);
-  let last4     = numbersOnly.slice(8, 12);
-
-  // If the user typed fewer than 3 digits, we can¡¯t form +971 properly. 
-  // So we do a check:
-  if (numbersOnly.length < 3) {
-    // Just show partial?
-    return '+' + numbersOnly;
-  }
-
-  let formatted = '+971';
-  if (region)  formatted += ' ' + region;
-  if (next3)   formatted += ' ' + next3;
-  if (last4)   formatted += ' ' + last4;
-
-  return formatted;
-}
-
-// *** UPDATED UK AUTO-FORMAT ***
-function formatUK(numbersOnly) {
-  // We want +44 7123 456789 (mobile example)
-  let formatted = '';
-
-  if (numbersOnly.startsWith('44')) {
-    // e.g., "447123456789"
-    const cc   = numbersOnly.slice(0, 2);   // "44"
-    const rest = numbersOnly.slice(2);      // "7123456789"
-    const firstBlock = rest.slice(0, 4);    // "7123"
-    const secondBlock = rest.slice(4,9);      // "456789"
-
-    formatted = `+${cc} ${firstBlock}`;
-    if (secondBlock) {
-      formatted += ` ${secondBlock}`;
-    }
-
-  } else if (numbersOnly.startsWith('0')) {
-    // e.g., "07123456789" => let's do a simplified 0 + "7123" + "456789"
-    const zero = numbersOnly.slice(0, 1);   // "0"
-    const rest = numbersOnly.slice(1);      // "7123456789"
-    const firstBlock = rest.slice(0, 4);
-    const secondBlock = rest.slice(4);
-
-    formatted = `${zero}${firstBlock}`;
-    if (secondBlock) {
-      formatted += ` ${secondBlock}`;
-    }
-
-  } else {
-    // Default to +44 if no '44' or '0' prefix
-    const cc = '44';
-    const firstBlock = numbersOnly.slice(0, 4);
-    const secondBlock = numbersOnly.slice(4);
-
-    formatted = `+${cc} ${firstBlock}`;
-    if (secondBlock) {
-      formatted += ` ${secondBlock}`;
-    }
-  }
-
-  return formatted;
-}
-
-function formatEurope(numbersOnly) {
-  // Example: +49 30 1234 5678
-  // Pattern: +XX (1?4 digits) (3?4 digits) (3?4 digits)
-  // We'll do a simplified approach:
-  let cc   = numbersOnly.slice(0, 2); // e.g. '49'
-  let part1 = numbersOnly.slice(2, 6);  // up to 4 digits
-  let part2 = numbersOnly.slice(6, 10); // up to 4 digits
-  let part3 = numbersOnly.slice(10, 14); // up to 4 digits
-
-  let formatted = '+';
-  if (cc)   formatted += cc;
-  if (part1) formatted += ' ' + part1;
-  if (part2) formatted += ' ' + part2;
-  if (part3) formatted += ' ' + part3;
-
-  return formatted;
-}
-
-// 3) Listen for region changes
-if (regionSelect && phoneInput) {
-  regionSelect.addEventListener('change', function() {
-    const region = regionSelect.value;
-    if (phoneFormats[region]) {
-      phoneInput.pattern = phoneFormats[region].pattern;
-      phoneInput.placeholder = phoneFormats[region].placeholder;
-    } else {
-      // Default if region not in phoneFormats or not selected
-      phoneInput.pattern = '';
-      phoneInput.placeholder = 'PHONE';
-    }
-    // Reset phone input on region change (optional)
-    phoneInput.value = '';
-  });
-
-  // 4) Auto-format on input
-  phoneInput.addEventListener('input', function() {
-    const region = regionSelect.value;
-    
-    // Strip out all non-digit characters, but keep leading '+' if the region uses it
-    let rawValue     = phoneInput.value;
-    let hasPlusSign  = rawValue.startsWith('+'); 
-    let numbersOnly  = rawValue.replace(/\D/g, ''); // All digits only
-
-    // Switch region and apply appropriate function:
-    let formattedValue = '';
-    switch (region) {
-      case 'USA':
-        formattedValue = formatUSA(numbersOnly);
-        break;
-      case 'Canada':
-        formattedValue = formatCanada(numbersOnly);
-        break;
-
-      case 'South America':
-        formattedValue = formatDefault(numbersOnly);
-        break;
-      case 'Asia-Pacific':
-        formattedValue = formatDefault(numbersOnly);
-        break;
-      case 'UAE':
-        formattedValue = formatDefault(numbersOnly);
-        break;
-      case 'UK':
-        formattedValue = formatDefault(numbersOnly);
-        break;
-      case 'Europe':
-        formattedValue = formatDefault(numbersOnly);
-        break;
-      default:
-        // If no region selected, no auto-format
-        formattedValue = rawValue;
-        break;
-    }
-
-    phoneInput.value = formattedValue;
-  });
-}
-
-
-const phoneInputs = document.querySelectorAll('#Phone,#Phone-2, #PHONE-2, #PHONE, #On-Site-Contact-Phone-Number-2, #On-Site-Contact-Phone-Number');
-
-
-function formatUSPhone(numbersOnly) {
-let area   = numbersOnly.slice(0, 3);
-let middle = numbersOnly.slice(3, 6);
-let last   = numbersOnly.slice(6, 10);
-
-let formatted = '';
-if (area) {
-formatted += `(${area}`;
-if (area.length === 3) formatted += ')';
-}
-if (middle) {
-formatted += ` ${middle}`;
-}
-if (last) {
-formatted += `-${last}`;
-}
-return formatted;
-}
-
-phoneInputs.forEach(input => {
-// Format on input
-input.addEventListener('input', function() {
-let rawValue = input.value;
-let numbersOnly = rawValue.replace(/\D/g, ''); // Strip non-digits
-
-// Enforce max of 10 digits
-if (numbersOnly.length > 10) {
-  numbersOnly = numbersOnly.slice(0, 10);
-}
-
-input.value = formatUSPhone(numbersOnly);
-});
-
-// Allow only digits on keypress
-input.addEventListener('keypress', function(e) {
-if (!/\d/.test(e.key)) {
-  e.preventDefault();
-}
-});
-});
 
 // Get the REGION dropdown element and zip code input fields
 const zipInputs = document.querySelectorAll('#ZIPCODE, #ZIP-Code-2, #zipcode-3, #zipcode-2, #zipcode-22, #Zipcode');
