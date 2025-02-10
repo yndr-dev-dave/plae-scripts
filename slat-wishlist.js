@@ -1,4 +1,4 @@
-if (window.location.pathname === '/slat') {
+if (window.location.pathname === '/slattreadmillcomingsoon') {
 
     const targetElement = document.querySelector('.text-field-slat.message');
       
