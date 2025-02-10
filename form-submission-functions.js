@@ -121,7 +121,7 @@ const pathsToMatch = [
   '/accessories',
   '/work-with-us',
   '/request-quote',
-  '/slat'
+  '/slattreadmillcomingsoon'
 
 ];
 
